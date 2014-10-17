@@ -39,6 +39,7 @@
 #define kInternalName  "CMM_OILExample"  /**< Short CMM name for configuration. */
 #define kDisplayName   "Custom color space example OIL CMM"  /**< UTF-8 CMM name for display. */
 
+#define kGrayChannelCount   (1)
 #define kRGBChannelCount   (3)
 #define kCMYKChannelCount  (4)
 
@@ -63,6 +64,7 @@ int nGrayMode = 0;
 int nObjMode  = 0;
 unsigned long ulFlag = 0/*16908811*/;
 void* ColorData;
+//ulong m_ulColorFlag;			// color flag
 /* New */
 ulong ulOpe;
 unsigned char ucColorMode;
@@ -230,6 +232,20 @@ static sw_cmm_custom_colorspace gCCSArray[] = {
   { (uint8*) "OtherColorMapFeaturesCMYK", kCMYKChannelCount, kCMYKChannelCount },
   #define kCCS_DefaultColorMapFeaturesRGBIndex  (2)
   { (uint8*) "DefaultColorMapFeaturesRGB", kRGBChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesRGBTextIndex  (3)
+	 { (uint8*) "DefaultColorMapFeaturesRGBText", kRGBChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesRGBImageIndex  (4)
+	 { (uint8*) "DefaultColorMapFeaturesRGBImage", kRGBChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesRGBVectorIndex  (5)
+	 { (uint8*) "DefaultColorMapFeaturesRGBVector", kRGBChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesGrayIndex  (6)
+  { (uint8*) "DefaultColorMapFeaturesGray", kGrayChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesGrayTextIndex  (7)
+  { (uint8*) "DefaultColorMapFeaturesGrayText", kGrayChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesGrayImageIndex  (8)
+  { (uint8*) "DefaultColorMapFeaturesGrayImage", kGrayChannelCount, kCMYKChannelCount },
+  #define kCCS_DefaultColorMapFeaturesGrayVectorIndex  (9)
+  { (uint8*) "DefaultColorMapFeaturesGrayVector", kGrayChannelCount, kCMYKChannelCount }
 };
 
 typedef void (*CMYKColorMappingFunc)(float cmykValue[]); /**< Typedef for the color modifying callback function. */
@@ -444,41 +460,175 @@ static void OtherColorMapFeaturesCMYK(float cmykValue[])
  */
 static void DefaultColorMapFeaturesRGB(float rgbInCMYKOutValue[])
 {
-    unsigned char ucRGB[4];
+	printf("\n Entered DefaultColorMapFeaturesRGB");
+	 unsigned char ucRGB[4];
 
-    HQASSERT((rgbInCMYKOutValue != NULL), "CMM: DefaultColorMapFeaturesRGB invalid color array");
+	HQASSERT((rgbInCMYKOutValue != NULL), "CMM: DefaultColorMapFeaturesRGB invalid color array");
 
-    ucRGB[1]=(unsigned char)(rgbInCMYKOutValue[0]*255);
-    ucRGB[2]=(unsigned char)(rgbInCMYKOutValue[1]*255);
-    ucRGB[3]=(unsigned char)(rgbInCMYKOutValue[2]*255);
+	ucRGB[1]=(unsigned char)(rgbInCMYKOutValue[0]*255);
+	ucRGB[2]=(unsigned char)(rgbInCMYKOutValue[1]*255);
+	ucRGB[3]=(unsigned char)(rgbInCMYKOutValue[2]*255);
 
-    if( ucColorMode )
-    {
-        ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
-    }
-    else
-    {
-        //ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
-    }
-    
-    setRGB( (void*)ColorData, ulFlag, nGrayMode, ppucSrcGam, nObjMode,
-			 	ucColorMode, (unsigned char*) ucRGB, kCMYKChannelCount);
+	if( ucColorMode )
+	{
+		ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
+	}
+	else
+	{
+		//ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
+	}
 
-    rgbInCMYKOutValue[3]=(float)(ucRGB[0]);///255.0;
-    rgbInCMYKOutValue[0]=(float)(ucRGB[1])/255.0;
-    rgbInCMYKOutValue[1]=(float)(ucRGB[2])/255.0;
-    rgbInCMYKOutValue[2]=(float)(ucRGB[3])/255.0;
+	setRGB( (void*)ColorData, ulFlag, nGrayMode, ppucSrcGam, nObjMode,
+				ucColorMode, (unsigned char*) ucRGB, kCMYKChannelCount);
 
-      /* ORIGINAL */
-      /*float rgbValue[3];
+	rgbInCMYKOutValue[3]=(float)(ucRGB[0]);///255.0;
+	rgbInCMYKOutValue[0]=(float)(ucRGB[1])/255.0;
+	rgbInCMYKOutValue[1]=(float)(ucRGB[2])/255.0;
+	rgbInCMYKOutValue[2]=(float)(ucRGB[3])/255.0;
+}
 
-      rgbValue[0] = rgbInCMYKOutValue[0];
-      rgbValue[1] = rgbInCMYKOutValue[1];
-      rgbValue[2] = rgbInCMYKOutValue[2];*/
+static void DefaultColorMapFeaturesRGBText(float rgbInCMYKOutValue[])
+{
+	printf("\n Entered DefaultColorMapFeaturesRGBText");
+}
 
-      /* The PMS now has a chance to change the values 
-      (void)PMS_RGBtoCMYK(rgbValue, rgbInCMYKOutValue);*/
+static void DefaultColorMapFeaturesRGBImage(float rgbInCMYKOutValue[])
+{
+	printf("\n Entered DefaultColorMapFeaturesRGBImage");
+	 unsigned char ucRGB[4];
 
+	HQASSERT((rgbInCMYKOutValue != NULL), "CMM: DefaultColorMapFeaturesRGB invalid color array");
+
+	ucRGB[1]=(unsigned char)(rgbInCMYKOutValue[0]*255);
+	ucRGB[2]=(unsigned char)(rgbInCMYKOutValue[1]*255);
+	ucRGB[3]=(unsigned char)(rgbInCMYKOutValue[2]*255);
+
+	if( ucColorMode )
+	{
+		ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
+	}
+	else
+	{
+		//ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
+	}
+
+	setRGB( (void*)ColorData, ulFlag, nGrayMode, ppucSrcGam, nObjMode,
+				ucColorMode, (unsigned char*) ucRGB, kCMYKChannelCount);
+
+	rgbInCMYKOutValue[3]=(float)(ucRGB[0]);///255.0;
+	rgbInCMYKOutValue[0]=(float)(ucRGB[1])/255.0;
+	rgbInCMYKOutValue[1]=(float)(ucRGB[2])/255.0;
+	rgbInCMYKOutValue[2]=(float)(ucRGB[3])/255.0;
+
+	  /* ORIGINAL */
+	  /*float rgbValue[3];
+
+	  rgbValue[0] = rgbInCMYKOutValue[0];
+	  rgbValue[1] = rgbInCMYKOutValue[1];
+	  rgbValue[2] = rgbInCMYKOutValue[2];*/
+
+	  /* The PMS now has a chance to change the values
+	  (void)PMS_RGBtoCMYK(rgbValue, rgbInCMYKOutValue);*/
+}
+
+static void DefaultColorMapFeaturesRGBVector(float rgbInCMYKOutValue[])
+{
+	printf("\n Entered DefaultColorMapFeaturesRGBVector");
+}
+
+
+/**
+ * @brief  Function to implement RGB to CMYK transformation.
+ *
+ * In this example, the function merely calls the PMS function
+ * @c PMS_RGBtoCMYK to allow PMS to apply a RGB to CMYK color
+ * transform.
+ *
+ * @param[in, out] rgbInCMYKOutValue  An array of floating point values which is
+ * assumed to contain an RGB color when it is passed in, and is populated with
+ * the corresponding CMYK value by the call.
+ */
+static void DefaultColorMapFeaturesGray(float rgbInCMYKOutValue[])
+{
+	 unsigned char ucRGB[0];
+
+	    HQASSERT((rgbInCMYKOutValue != NULL), "CMM: DefaultColorMapFeaturesRGB invalid color array");
+
+	    ucRGB[1]=(unsigned char)(rgbInCMYKOutValue[0]*255);
+	    ucRGB[2]=(unsigned char)(rgbInCMYKOutValue[1]*255);
+	    ucRGB[3]=(unsigned char)(rgbInCMYKOutValue[2]*255);
+
+	    if( ucColorMode )
+	    {
+	        ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
+	    }
+	    else
+	    {
+	    	 ulFlag = ulFlag | CR_STRBLT_8BPP |  CR_STRBLT_RGB_ORDER | CR_STRBLT_MONO;
+	    }
+
+	    nGrayMode = 1;
+	    setRGB( (void*)ColorData, ulFlag, nGrayMode, ppucSrcGam, nObjMode,
+				 	ucColorMode, (unsigned char*) ucRGB, kGrayChannelCount);
+
+	    rgbInCMYKOutValue[3]=(float)(ucRGB[0]);///255.0;
+		rgbInCMYKOutValue[0]=(float)(ucRGB[1])/255.0;
+		rgbInCMYKOutValue[1]=(float)(ucRGB[2])/255.0;
+		rgbInCMYKOutValue[2]=(float)(ucRGB[3])/255.0;
+
+	      /* ORIGINAL */
+	      /*float rgbValue[3];
+
+	      rgbValue[0] = rgbInCMYKOutValue[0];
+	      rgbValue[1] = rgbInCMYKOutValue[1];
+	      rgbValue[2] = rgbInCMYKOutValue[2];*/
+
+	      /* The PMS now has a chance to change the values
+	      (void)PMS_RGBtoCMYK(rgbValue, rgbInCMYKOutValue);*/
+}
+
+static void DefaultColorMapFeaturesGrayText(float grayInCMYKOutValue[])
+{
+	/*unsigned char ucRGB[0];
+	printf("\n Entered DefaultColorMapFeaturesGrayText");
+	 HQASSERT((grayInCMYKOutValue != NULL), "CMM: DefaultColorMapFeaturesGrayText invalid color array");
+	 int flag = 0;
+	 ucRGB[0]=(unsigned char)(grayInCMYKOutValue[0]*255);
+	 CMM_interface((void*)ColorData, flag, ppucSrcGam,(unsigned char*) ucRGB);*/
+
+	 unsigned char ucRGB[4];
+
+	HQASSERT((grayInCMYKOutValue != NULL), "CMM: DefaultColorMapFeaturesRGB invalid color array");
+
+	ucRGB[0]=(unsigned char)(grayInCMYKOutValue[0]*255);
+	ucRGB[2]=(unsigned char)(grayInCMYKOutValue[1]*255);
+	ucRGB[3]=(unsigned char)(grayInCMYKOutValue[2]*255);
+
+	if( ucColorMode )
+	{
+		ulFlag = ulFlag | CR_STRBLT_24BPP | CR_STRBLT_RGB_ORDER | CR_STRBLT_RGB;
+	}
+	else
+	{
+		 ulFlag = ulFlag | CR_STRBLT_8BPP |  CR_STRBLT_RGB_ORDER | CR_STRBLT_MONO;
+	}
+
+	nGrayMode = 1;
+	setRGB( (void*)ColorData, ulFlag, nGrayMode, ppucSrcGam, nObjMode,
+				ucColorMode, (unsigned char*) ucRGB, kGrayChannelCount);
+
+	grayInCMYKOutValue[3]=(float)(ucRGB[0]);///255.0;
+	grayInCMYKOutValue[0]=(float)(ucRGB[1])/255.0;
+	grayInCMYKOutValue[1]=(float)(ucRGB[2])/255.0;
+	grayInCMYKOutValue[2]=(float)(ucRGB[3])/255.0;
+}
+static void DefaultColorMapFeaturesGrayImage(float grayInCMYKOutValue[])
+{
+	 printf("\n Entered DefaultColorMapFeaturesGrayImage");
+}
+static void DefaultColorMapFeaturesGrayVector(float grayInCMYKOutValue[])
+{
+	 printf("\n Entered DefaultColorMapFeaturesGrayVector");
 }
 
 /**
@@ -759,13 +909,46 @@ static sw_cmm_result RIPCALL ccs_open_custom_colorspace(sw_cmm_instance *instanc
     pProfile->nInputChannels = kCMYKChannelCount;
     pProfile->nOutputChannels = kCMYKChannelCount;
     break;
-
+  case kCCS_DefaultColorMapFeaturesRGBTextIndex:
+      pProfile->pMappingFunc = DefaultColorMapFeaturesRGBText;
+      pProfile->nInputChannels = kRGBChannelCount;
+      pProfile->nOutputChannels = kCMYKChannelCount;
+      break;
+  case kCCS_DefaultColorMapFeaturesRGBImageIndex:
+       pProfile->pMappingFunc = DefaultColorMapFeaturesRGBImage;
+       pProfile->nInputChannels = kRGBChannelCount;
+       pProfile->nOutputChannels = kCMYKChannelCount;
+       break;
+  case kCCS_DefaultColorMapFeaturesRGBVectorIndex:
+        pProfile->pMappingFunc = DefaultColorMapFeaturesRGBVector;
+        pProfile->nInputChannels = kRGBChannelCount;
+        pProfile->nOutputChannels = kCMYKChannelCount;
+        break;
   case kCCS_DefaultColorMapFeaturesRGBIndex:
-    pProfile->pMappingFunc = DefaultColorMapFeaturesRGB;
-    pProfile->nInputChannels = kRGBChannelCount;
-    pProfile->nOutputChannels = kCMYKChannelCount;
-    break;
-
+		pProfile->pMappingFunc = DefaultColorMapFeaturesRGB;
+		pProfile->nInputChannels = kRGBChannelCount;
+		pProfile->nOutputChannels = kCMYKChannelCount;
+		break;
+  case kCCS_DefaultColorMapFeaturesGrayTextIndex:
+       pProfile->pMappingFunc = DefaultColorMapFeaturesGrayText;
+       pProfile->nInputChannels = kGrayChannelCount;
+       pProfile->nOutputChannels = kCMYKChannelCount;
+       break;
+  case kCCS_DefaultColorMapFeaturesGrayImageIndex:
+        pProfile->pMappingFunc = DefaultColorMapFeaturesGrayImage;
+        pProfile->nInputChannels = kGrayChannelCount;
+        pProfile->nOutputChannels = kCMYKChannelCount;
+        break;
+  case kCCS_DefaultColorMapFeaturesGrayVectorIndex:
+          pProfile->pMappingFunc = DefaultColorMapFeaturesGrayVector;
+          pProfile->nInputChannels = kGrayChannelCount;
+          pProfile->nOutputChannels = kCMYKChannelCount;
+          break;
+  case kCCS_DefaultColorMapFeaturesGrayIndex:
+       pProfile->pMappingFunc = DefaultColorMapFeaturesGray;
+       pProfile->nInputChannels = kGrayChannelCount;
+       pProfile->nOutputChannels = kCMYKChannelCount;
+       break;
   default:
     /* index out of bounds - Should never be reached */
     HQFAIL("Colorspace index out of bounds");
@@ -920,7 +1103,7 @@ static sw_cmm_result RIPCALL ccs_invoke_transform(sw_cmm_instance *instance,
   /* Call array of CMYKColorMappingFunc values for each pixel */
   nPixelInIndex = 0;
   nPixelOutIndex = 0;
-  for (i = 0; i < num_pixels; i ++)
+  //for (i = 0; i < num_pixels; i ++)
   {
     uint32 nMappingFunc;
     float cmykOrRGBValue[kCMYKChannelCount];
@@ -932,12 +1115,13 @@ static sw_cmm_result RIPCALL ccs_invoke_transform(sw_cmm_instance *instance,
     nOutputChannels = pTransform->pProfileArray[pTransform->nProfiles - 1].nOutputChannels;
     memcpy(cmykOrRGBValue, &input_data[nPixelInIndex], sizeof(float) * nInputChannels);
 
-    /* Apply transform */
+    pTransform->pProfileArray[pTransform->nProfiles - 1].pMappingFunc(cmykOrRGBValue);
+    /* Apply transform
     for (nMappingFunc = 0; nMappingFunc < pTransform->nProfiles; nMappingFunc ++)
     {
       if (pTransform->pProfileArray[nMappingFunc].pMappingFunc)
         pTransform->pProfileArray[nMappingFunc].pMappingFunc(cmykOrRGBValue);
-    }
+    }*/
 
     /* Store result */
     memcpy(&output_data[nPixelOutIndex], cmykOrRGBValue, sizeof(float) * nOutputChannels);
