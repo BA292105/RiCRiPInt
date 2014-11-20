@@ -183,7 +183,7 @@ int32 RIPCALL OIL_RasterRequirements(void *pJobContext,
 {
   UNUSED_PARAM(void *, pJobContext);
   pRasterRequirements->have_framebuffer = ((g_tSystemInfo.eBandDeliveryType == PMS_PUSH_BAND_DIRECT_FRAME) || (g_tSystemInfo.eBandDeliveryType == PMS_PUSH_BAND_DIRECT_SINGLE));
-
+  printf("\nIn OIL_RasterRequirements \n");
   /* We save the required raster requirements data for later use*/
   if ( fRenderingStarting == 1 )
     LocalRasterRequirements = *pRasterRequirements;
